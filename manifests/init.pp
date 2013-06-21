@@ -18,7 +18,6 @@
 # === Examples
 #
 # * Installation:
-#     class { 'trusted_ca': }
 #
 #     trusted_ca::ca { 'example.org.local':
 #       source  => puppet:///data/ssl/example.com.pem
