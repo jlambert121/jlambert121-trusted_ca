@@ -17,6 +17,14 @@
 #   Integer.  Order of certificate ordering.
 #   Default: 99
 #
+# [*system*]
+#   Boolean.  Whether or not the certificate should be installedi n the system keychain
+#   Default: true
+#
+# [*java*]
+#   Boolean.  Whether or not the certificate should be installedi n the java keychain
+#   Default: true
+#
 #
 # === Examples
 #
@@ -41,6 +49,8 @@ define trusted_ca::ca (
   $content  = undef,
   $source   = undef,
   $order    = 99,
+  $system   = true,
+  $java     = true,
 ) {
 
   include trusted_ca
@@ -49,12 +59,30 @@ define trusted_ca::ca (
     crit('No content, source or symlink specified')
   }
 
-  concat::fragment {
-    "ca-bundle.crt-${name}":
+  if $system == true {
+    concat::fragment { "ca-bundle.crt-${name}":
       source  => $source,
       content => $content,
       target  => '/etc/pki/tls/certs/ca-bundle.crt',
       order   => $order,
+    }
+  }
+
+  if $java == true {
+    file { "/tmp/${name}-trustedca":
+      ensure  => 'file',
+      source  => $source,
+      content => $content,
+    }
+
+    exec { "import ${name} to java":
+      command   => "keytool -import -noprompt -trustcacerts -alias ${name} -file /tmp/${name}-trustedca -keystore /etc/alternatives/jre_1.7.0/lib/security/cacerts -storepass changeit",
+      cwd       => '/tmp',
+      path      => '/usr/bin/',
+      logoutput => on_failure,
+      unless    => "echo '' | keytool -list -keystore /etc/alternatives/jre_1.7.0/lib/security/cacerts | grep ${name}",
+      require   => File["/tmp/${name}-trustedca"],
+    }
   }
 
 }
