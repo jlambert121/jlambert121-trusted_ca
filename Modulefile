@@ -1,5 +1,5 @@
 name 'evenup-trusted_ca'
-version '0.0.2'
+version '0.1.0'
 author 'Justin Lambert <jlambert@letsevenup.com>'
 license 'Apache'
 summary 'Manages host SSL certs.'
