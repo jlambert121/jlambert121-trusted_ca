@@ -78,7 +78,7 @@ define trusted_ca::ca (
     exec { "import ${name} to java":
       command   => "keytool -import -noprompt -trustcacerts -alias ${name} -file /tmp/${name}-trustedca -keystore /etc/alternatives/jre_1.7.0/lib/security/cacerts -storepass changeit",
       cwd       => '/tmp',
-      path      => '/usr/bin/',
+      path      => '/bin/:/usr/bin/',
       logoutput => on_failure,
       unless    => "echo '' | keytool -list -keystore /etc/alternatives/jre_1.7.0/lib/security/cacerts | grep ${name}",
       require   => File["/tmp/${name}-trustedca"],
