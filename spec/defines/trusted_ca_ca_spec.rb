@@ -4,8 +4,14 @@ describe 'trusted_ca::ca', :type => :define do
   let (:facts) { { :concat_basedir => '/var/lib/puppet/concat' } }
   let(:title) { 'my_ca' }
 
-  context 'default' do
+  context 'default (no java class)' do
     it { should contain_concat__fragment('ca-bundle.crt-my_ca') }
+    it { should_not contain_exec('import my_ca to java') }
+  end
+
+  context 'default (java class)' do
+    let(:pre_condition) { ['class java {}', 'include java'] }
+
     it { should contain_exec('import my_ca to java') }
   end
 
@@ -26,6 +32,7 @@ describe 'trusted_ca::ca', :type => :define do
   end
 
   context 'no system' do
+    let(:pre_condition) { ['class java {}', 'include java'] }
     let(:params) { { :source => 'puppet:///test', :system => false } }
 
     it { should_not contain_concat__fragment('ca-bundle.crt-my_ca') }
