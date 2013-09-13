@@ -68,7 +68,7 @@ define trusted_ca::ca (
     }
   }
 
-  if $java == true {
+  if $java == true and defined(Class['java']) {
     file { "/tmp/${name}-trustedca":
       ensure  => 'file',
       source  => $source,
