@@ -1,6 +1,7 @@
 fixtures:
   repositories:
-    concat: https://github.com/ripienaar/puppet-concat.git
+    concat: git://github.com/ripienaar/puppet-concat.git
+    stdlib: git://github.com/puppetlabs/puppetlabs-stdlib.git
   symlinks:
     trusted_ca: "#{source_dir}"
 
