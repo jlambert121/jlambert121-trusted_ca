@@ -5,10 +5,6 @@
 #
 # === Parameters
 #
-# [*content*]
-#   String.  Certificate PEM.
-#   Default: undef
-#
 # [*source*]
 #   String.  Path to the certificate PEM.
 #   Default: undef
@@ -46,7 +42,6 @@
 # Copyright 2013 EvenUp.
 #
 define trusted_ca::ca (
-  $content  = undef,
   $source   = undef,
   $order    = 99,
   $system   = true,
@@ -55,26 +50,21 @@ define trusted_ca::ca (
 
   include trusted_ca
 
-  if ! ($content or $source) {
-    crit('No content, source or symlink specified')
+  file { "/tmp/${name}-trustedca":
+    source  => $source,
   }
 
   if $system == true {
-    concat::fragment { "ca-bundle.crt-${name}":
-      source  => $source,
-      content => $content,
-      target  => '/etc/pki/tls/certs/ca-bundle.crt',
-      order   => $order,
+    exec { "import ${name} to ca-bundle.crt":
+      command   => "openssl x509 -in /tmp/${name}-trustedca -text >> /etc/pki/tls/certs/ca-bundle.crt",
+      path      => '/bin/:/usr/bin/',
+      logoutput => on_failure,
+      onlyif    => "openssl verify /tmp/${name}-trustedca | grep error",
+      require   => File["/tmp/${name}-trustedca"],
     }
   }
 
   if $java == true and defined(Class['java']) {
-    file { "/tmp/${name}-trustedca":
-      ensure  => 'file',
-      source  => $source,
-      content => $content,
-    }
-
     exec { "import ${name} to java":
       command   => "keytool -import -noprompt -trustcacerts -alias ${name} -file /tmp/${name}-trustedca -keystore /etc/alternatives/jre_1.7.0/lib/security/cacerts -storepass changeit",
       cwd       => '/tmp',
