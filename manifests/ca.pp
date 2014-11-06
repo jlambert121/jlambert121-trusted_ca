@@ -14,11 +14,11 @@
 #   Default: 99
 #
 # [*system*]
-#   Boolean.  Whether or not the certificate should be installedi n the system keychain
+#   Boolean.  Whether or not the certificate should be installed in the system keychain
 #   Default: true
 #
 # [*java*]
-#   Boolean.  Whether or not the certificate should be installedi n the java keychain
+#   Boolean.  Whether or not the certificate should be installed in the java keychain
 #   Default: true
 #
 #
