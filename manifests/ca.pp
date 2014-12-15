@@ -21,6 +21,9 @@
 #   Boolean.  Whether or not the certificate should be installed in the java keychain
 #   Default: true
 #
+# [*java_keystore*]
+#   String.  Path to the java keystore file.
+#   Default: /etc/alternatives/jre_1.7.0/lib/security/cacerts
 #
 # === Examples
 #
@@ -42,10 +45,11 @@
 # Copyright 2013 EvenUp.
 #
 define trusted_ca::ca (
-  $source   = undef,
-  $order    = 99,
-  $system   = true,
-  $java     = true,
+  $source        = undef,
+  $order         = 99,
+  $system        = true,
+  $java          = true,
+  $java_keystore = '/etc/alternatives/jre_1.7.0/lib/security/cacerts',
 ) {
 
   include trusted_ca
@@ -66,11 +70,11 @@ define trusted_ca::ca (
 
   if $java == true and defined(Class['java']) {
     exec { "import ${name} to java":
-      command   => "keytool -import -noprompt -trustcacerts -alias ${name} -file /tmp/${name}-trustedca -keystore /etc/alternatives/jre_1.7.0/lib/security/cacerts -storepass changeit",
+      command   => "keytool -import -noprompt -trustcacerts -alias ${name} -file /tmp/${name}-trustedca -keystore ${java_keystore} -storepass changeit",
       cwd       => '/tmp',
       path      => '/bin/:/usr/bin/',
       logoutput => on_failure,
-      unless    => "echo '' | keytool -list -keystore /etc/alternatives/jre_1.7.0/lib/security/cacerts | grep ${name}",
+      unless    => "echo '' | keytool -list -keystore ${java_keystore} | grep ${name}",
       require   => File["/tmp/${name}-trustedca"],
     }
   }
