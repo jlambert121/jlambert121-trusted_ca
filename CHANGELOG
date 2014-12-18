@@ -1,3 +1,6 @@
+20141219 v0.3.0
+  Allow specifying java_keystore file
+  Doc fixes
 20140815 v0.2.0
   Update certificate install method
 20130913 v0.1.2
