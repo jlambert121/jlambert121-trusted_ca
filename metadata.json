@@ -1,0 +1,20 @@
+{
+  "name": "evenup-trusted_ca",
+  "version": "0.3.0",
+  "author": "Justin Lambert <jlambert@letsevenup.com>",
+  "license": "Apache 2.0",
+  "summary": "Manages trusted_ca",
+  "source": "https://github.com/evenup/evenup-trusted_ca",
+  "project_page": "https://github.com/evenup/evenup-trusted_ca",
+  "issues_url": "https://github.com/evenup/evenup-trusted_ca/issues",
+  "tags": ["trusted_ca", "ssl"],
+  "operatingsystem_support": [
+    { "operatingsystem": "RedHat", "operatingsystemrelease": [ "6", "7" ] },
+    { "operatingsystem": "CentOS", "operatingsystemrelease": [ "6", "7" ] },
+    { "operatingsystem": "Ubuntu", "operatingsystemrelease": [ "10.04", "12.04", "14.04" ] }
+  ],
+  "dependencies": [
+    { "name": "puppetlabs/concat", "version_requirement": ">=1.0.0 <2.0.0" },
+    { "name": "puppetlabs/stdlib", "version_requirement": ">=3.2.0 <5.0.0" }
+  ]
+}
