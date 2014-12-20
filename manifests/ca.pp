@@ -7,23 +7,9 @@
 #
 # [*source*]
 #   String.  Path to the certificate PEM.
-#   Default: undef
 #
-# [*order*]
-#   Integer.  Order of certificate ordering.
-#   Default: 99
-#
-# [*system*]
-#   Boolean.  Whether or not the certificate should be installed in the system keychain
-#   Default: true
-#
-# [*java*]
-#   Boolean.  Whether or not the certificate should be installed in the java keychain
-#   Default: true
-#
-# [*java_keystore*]
-#   String.  Path to the java keystore file.
-#   Default: /etc/alternatives/jre_1.7.0/lib/security/cacerts
+# [*install_path*]
+#   String.  Location to install trusted certificates
 #
 # === Examples
 #
@@ -39,44 +25,26 @@
 #
 # * Justin Lambert <mailto:jlambert@letsevenup.com>
 #
-#
-# === Copyright
-#
-# Copyright 2013 EvenUp.
-#
 define trusted_ca::ca (
-  $source        = undef,
-  $order         = 99,
-  $system        = true,
-  $java          = true,
-  $java_keystore = '/etc/alternatives/jre_1.7.0/lib/security/cacerts',
+  $source,
+  $install_path = $::trusted_ca::install_path,
 ) {
 
-  include trusted_ca
-
-  file { "/tmp/${name}-trustedca":
-    source  => $source,
+  if ! defined(Class['trusted_ca']) {
+    fail('You must include the trusted_ca base class before using any trusted_ca defined resources')
   }
 
-  if $system == true {
-    exec { "import ${name} to ca-bundle.crt":
-      command   => "openssl x509 -in /tmp/${name}-trustedca -text >> /etc/pki/tls/certs/ca-bundle.crt",
-      path      => '/bin/:/usr/bin/',
-      logoutput => on_failure,
-      onlyif    => "openssl verify /tmp/${name}-trustedca | grep error",
-      require   => File["/tmp/${name}-trustedca"],
-    }
+  validate_re($source, '\.crt$', "[Trusted_ca::Ca::${name}]: source must a PEM encded file with the crt extension")
+
+  if $name =~ /\.crt$/ {
+    $_name = $name
+  } else {
+    $_name = "${name}.crt"
   }
 
-  if $java == true and defined(Class['java']) {
-    exec { "import ${name} to java":
-      command   => "keytool -import -noprompt -trustcacerts -alias ${name} -file /tmp/${name}-trustedca -keystore ${java_keystore} -storepass changeit",
-      cwd       => '/tmp',
-      path      => '/bin/:/usr/bin/',
-      logoutput => on_failure,
-      unless    => "echo '' | keytool -list -keystore ${java_keystore} | grep ${name}",
-      require   => File["/tmp/${name}-trustedca"],
-    }
+  file { "${install_path}/${_name}":
+    source => $source,
+    notify => Exec['update_system_certs']
   }
 
 }

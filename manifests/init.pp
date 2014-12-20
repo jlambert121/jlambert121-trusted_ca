@@ -12,6 +12,7 @@
 #
 # * Installation:
 #
+#     include trusted_ca
 #     trusted_ca::ca { 'example.org.local':
 #       source  => puppet:///data/ssl/example.com.pem
 #     }
@@ -21,15 +22,29 @@
 #
 # * Justin Lambert <mailto:jlambert@letsevenup.com>
 #
-#
-# === Copyright
-#
-# Copyright 2013 EvenUp.
-#
-class trusted_ca {
+class trusted_ca (
+  $certificates_version = $::trusted_ca::params::certificates_version,
+  $path                 = $::trusted_ca::params::path,
+  $install_path         = $::trusted_ca::params::install_path,
+  $update_command       = $::trusted_ca::params::update_command,
+) inherits trusted_ca::params {
+
+  if is_array($path) {
+    $_path = join($path, ':')
+  }
+  else {
+    $_path = $path
+  }
 
   package { 'ca-certificates':
-    ensure  => latest
+    ensure  => $certificates_version,
+  }
+
+  exec { 'update_system_certs':
+    command     => $update_command,
+    path        => $_path,
+    logoutput   => on_failure,
+    refreshonly => true,
   }
 
 }
