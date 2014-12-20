@@ -1,42 +1,46 @@
 require 'spec_helper'
 
 describe 'trusted_ca::ca', :type => :define do
-  let(:title) { 'my_ca' }
+  let(:title) { 'mycert' }
+  let(:pre_condition) { 'include trusted_ca' }
+  let(:params) { { :source => 'puppet:///data/mycert.crt' } }
 
-  context 'default (no java class)' do
-    it { should contain_exec('import my_ca to ca-bundle.crt') }
-    it { should_not contain_exec('import my_ca to java') }
+  context 'validations' do
+    let(:facts) { { :osfamily => 'RedHat', :operatingsystemmajrelease => '6' } }
+
+    context 'bad source' do
+      let(:params) { { :source => 'foo' } }
+      it { expect { should create_define('trusted_ca::ca') }.to raise_error }
+    end
+
+    context 'not including trusted_ca' do
+      let(:pre_condition) {}
+      it { expect { should create_define('trusted_ca::ca') }.to raise_error }
+    end
   end
 
-  context 'default (java class)' do
-    let(:pre_condition) { ['class java {}', 'include java'] }
+  context 'on RedHat' do
+    let(:facts) { { :osfamily => 'RedHat', :operatingsystemmajrelease => '6' } }
 
-    it { should contain_exec('import my_ca to java') }
+    context 'default' do
+      it { should contain_file('/etc/pki/ca-trust/source/anchors/mycert.crt').with(
+        :source => 'puppet:///data/mycert.crt',
+        :notify => "Exec[update_system_certs]"
+      ) }
+    end
+
   end
 
-  context 'when no source' do
-    it { expect { should raise_error(Puppet::Error) } }
-  end
+  context 'on Ubuntu' do
+    let(:facts) { { :osfamily => 'Debian', :operatingsystemrelease => '12.04' } }
 
-  context 'accept source' do
-    let(:params) { { :source => 'puppet:///data/myca.pem' } }
-
-    it { should contain_file('/tmp/my_ca-trustedca').with_source('puppet:///data/myca.pem') }
-  end
-
-  context 'no system' do
-    let(:pre_condition) { ['class java {}', 'include java'] }
-    let(:params) { { :source => 'puppet:///test', :system => false } }
-
-    it { should_not contain_exec('import my_ca to ca-bundle.crt') }
-    it { should contain_exec('import my_ca to java') }
-  end
-
-  context 'no java' do
-    let(:params) { { :source => 'puppet:///test', :java => false } }
-
-    it { should contain_exec('import my_ca to ca-bundle.crt') }
-    it { should_not contain_exec('import my_ca to java') }
+    context 'default' do
+      it { should contain_file('/usr/local/share/ca-certificates/mycert.crt').with(
+        :source => 'puppet:///data/mycert.crt',
+        :notify => "Exec[update_system_certs]"
+      ) }
+    end
   end
 
 end
+
