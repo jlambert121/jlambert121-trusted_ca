@@ -1,6 +1,6 @@
 {
   "name": "evenup-trusted_ca",
-  "version": "0.3.0",
+  "version": "1.0.0",
   "author": "Justin Lambert <jlambert@letsevenup.com>",
   "license": "Apache-2.0",
   "summary": "Manages trusted_ca",
@@ -14,7 +14,6 @@
     { "operatingsystem": "Ubuntu", "operatingsystemrelease": [ "10.04", "12.04", "14.04" ] }
   ],
   "dependencies": [
-    { "name": "puppetlabs/concat", "version_requirement": ">=1.0.0 <2.0.0" },
     { "name": "puppetlabs/stdlib", "version_requirement": ">=3.2.0 <5.0.0" }
   ]
 }
