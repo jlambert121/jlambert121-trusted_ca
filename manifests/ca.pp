@@ -44,7 +44,7 @@ define trusted_ca::ca (
 
   file { "${install_path}/${_name}":
     source => $source,
-    notify => Exec['update_system_certs']
+    notify => Exec['update_system_certs'],
   }
 
 }
