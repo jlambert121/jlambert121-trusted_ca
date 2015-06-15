@@ -13,6 +13,21 @@ describe 'trusted_ca::ca', :type => :define do
       it { expect { should create_define('trusted_ca::ca') }.to raise_error }
     end
 
+    context 'bad content' do
+      let(:params) { { :source => Nil, :content => 'foo' } }
+      it { expect { should create_define('trusted_ca::ca') }.to raise_error }
+    end
+
+    context 'specifying both source and content' do
+      let(:params) { { :content => 'foo' } }
+      it { expect { should create_define('trusted_ca::ca') }.to raise_error }
+    end
+
+    context 'specifying neither source nor content' do
+      let(:params) { { :content => Nil, :source => Nil } }
+      it { expect { should create_define('trusted_ca::ca') }.to raise_error }
+    end
+
     context 'not including trusted_ca' do
       let(:pre_condition) {}
       it { expect { should create_define('trusted_ca::ca') }.to raise_error }
@@ -25,7 +40,7 @@ describe 'trusted_ca::ca', :type => :define do
     context 'default' do
       it { should contain_file('/etc/pki/ca-trust/source/anchors/mycert.crt').with(
         :source => 'puppet:///data/mycert.crt',
-        :notify => "Exec[update_system_certs]"
+        :notify => "Exec[validate /etc/pki/ca-trust/source/anchors/mycert.crt]"
       ) }
     end
 
@@ -37,10 +52,9 @@ describe 'trusted_ca::ca', :type => :define do
     context 'default' do
       it { should contain_file('/usr/local/share/ca-certificates/mycert.crt').with(
         :source => 'puppet:///data/mycert.crt',
-        :notify => "Exec[update_system_certs]"
+        :notify => "Exec[validate /usr/local/share/ca-certificates/mycert.crt]"
       ) }
     end
   end
 
 end
-

@@ -26,7 +26,7 @@ Many organizations use self-signed SSL certificates for internal services that n
 
 ### What trusted_ca affects
 
-* Distributin-provided trusted SSL certificates package
+* Distribution-provided trusted SSL certificates package
 * System-wide additional trusted SSL certificates
 * SSL certificates installed into java trusted certificate keystore
 
@@ -50,7 +50,7 @@ Manage only distribution-specific trusted certificates
     class { 'trusted_ca': }
 ```
 
-Install a self-signed SSL certificate into the system's global trusted keystore
+Install a self-signed SSL certificate into the system's global trusted keystore from a source file
 
 ```puppet
     class { 'trusted_ca': }
@@ -59,13 +59,22 @@ Install a self-signed SSL certificate into the system's global trusted keystore
     }
 ```
 
-Install a self-signed SSL certificate into a java keystore
+Install a self-signed SSL certificate into a java keystore from a source file
 
 ```puppet
     class { 'trusted_ca': }
     trusted_ca::java { 'mycompany.org':
       source => 'puppet:///ssl/mycompany.org/crt',
       java_keystore => '/usr/local/java/lib/security/cacerts',
+    }
+```
+
+Install a certificate into the system's global trusted keystore from a PEM-encoded string (eg from hiera)
+
+```puppet
+    class { 'trusted_ca': }
+    trusted_ca::ca { 'example.net':
+      content => hiera("example-net-x509"),
     }
 ```
 
@@ -92,12 +101,18 @@ String.  Location to install the trusted certificates.
 String.  Command to rebuild the system-trusted certificates.
 
 ### Public defines
-
+ 
 #### `trusted_ca::ca`
 
 ##### `source`
 
-String.  Source of the certificate to include.  Must be in PEM format with crt extension.
+String.  Source of the certificate to include.  Must be a file in PEM format with crt extension.
+You must specify either source or content, but not both. If source is specified, content is ignored.
+
+##### `content`
+
+String.  Content of certificate in PEM format.
+You must specify either source or content, but not both. If source is specified, content is ignored.
 
 ##### `install_path`
 
@@ -107,7 +122,13 @@ String.  Destination of the certificate file for processing.  Defaults to the in
 
 ##### `source`
 
-String.  Source of the certificate to include.  Must be in PEM format.
+String.  Source of the certificate to include.  Must be a file in PEM format with crt extension.
+You must specify either source or content, but not both. If source is specified, content is ignored.
+
+##### `content`
+
+String.  Content of certificate in PEM format.
+You must specify either source or content, but not both. If source is specified, content is ignored.
 
 ##### `java_keystore`
 
@@ -122,6 +143,8 @@ String.  Location of of the java cacerts keystore file.
 Tested on:
 * CentOS 6, 7
 * Ubuntu Server 10.04, 12.04, 14.04
+
+This module assumes the keytool and openssl utilities are available.
 
 ## Development
 
