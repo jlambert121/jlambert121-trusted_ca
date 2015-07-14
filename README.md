@@ -88,6 +88,10 @@ Install a certificate into the system's global trusted keystore from a PEM-encod
 
 String.  Version of the distribution-specific trusted certificates.  Examples would be 'latest' or a specific version.
 
+##### `certs_package`
+
+String.  Package name of the distribution-specific trusted certificates. Default is OS/Distribution specific.
+
 ##### `path`
 
 String/Array of String.  List of paths for the `update_command`.
@@ -99,6 +103,10 @@ String.  Location to install the trusted certificates.
 ##### `update_command`
 
 String.  Command to rebuild the system-trusted certificates.
+
+##### `certfile_suffix`
+
+String.  Suffix of certificate files. Default is OS/Distribution dependent, i.e. 'pem' or 'crt'.
 
 ### Public defines
  
@@ -117,6 +125,10 @@ You must specify either source or content, but not both. If source is specified,
 ##### `install_path`
 
 String.  Destination of the certificate file for processing.  Defaults to the install_path from the class, but can be overridden per certificate.
+
+##### `certfile_suffix`
+
+String.  Suffix of certificate files. Default is OS/Distribution dependent, i.e. 'pem' or 'crt'.
 
 #### `trusted_ca::java`
 
@@ -143,6 +155,8 @@ String.  Location of of the java cacerts keystore file.
 Tested on:
 * CentOS 6, 7
 * Ubuntu Server 10.04, 12.04, 14.04
+* SLES 11 SP3
+* OpenSuSE 13.1
 
 This module assumes the keytool and openssl utilities are available.
 

@@ -57,4 +57,28 @@ describe 'trusted_ca::ca', :type => :define do
     end
   end
 
+  context 'on Suse SLES' do
+    let(:facts) { { :osfamily => 'Suse', :operatingsystem => 'SLES' } }
+    let(:params) { { :source => 'puppet:///data/mycert.pem' } }
+
+    context 'default' do
+      it { should contain_file('/etc/ssl/certs/mycert.pem').with(
+        :source => 'puppet:///data/mycert.pem',
+        :notify => "Exec[validate /etc/ssl/certs/mycert.pem]"
+      ) }
+    end
+  end
+
+  context 'on Suse OpenSuSE' do
+    let(:facts) { { :osfamily => 'Suse', :operatingsystem => 'OpenSuSE' } }
+    let(:params) { { :source => 'puppet:///data/mycert.pem' } }
+
+    context 'default' do
+      it { should contain_file('/etc/pki/trust/anchors/mycert.pem').with(
+        :source => 'puppet:///data/mycert.pem',
+        :notify => "Exec[validate /etc/pki/trust/anchors/mycert.pem]"
+      ) }
+    end
+  end
+
 end
