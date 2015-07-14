@@ -18,6 +18,10 @@
 # [*install_path*]
 #   String.  Location to install trusted certificates
 #
+# [*certfile_suffix*]
+#   String.  The suffix of the certificate to install.
+#   Default is OS/Distribution dependent, i.e. 'crt' or 'pem'
+#
 # === Examples
 #
 # * Installation:
@@ -36,9 +40,10 @@
 # * Justin Lambert <mailto:jlambert@letsevenup.com>
 #
 define trusted_ca::ca (
-  $source       = undef,
-  $content      = undef,
-  $install_path = $::trusted_ca::install_path,
+  $source          = undef,
+  $content         = undef,
+  $install_path    = $::trusted_ca::install_path,
+  $certfile_suffix = $::trusted_ca::certfile_suffix,
 ) {
 
   if ! defined(Class['trusted_ca']) {
@@ -49,16 +54,18 @@ define trusted_ca::ca (
     fail('You must not specify both $source and $content for trusted_ca defined resources')
   }
 
-  if $name =~ /\.crt$/ {
+  if inline_template('<% if /\.#{@certfile_suffix}$/.match(@name) then %>yes<% else %>no<% end %>') == 'yes' {
     $_name = $name
   } else {
-    $_name = "${name}.crt"
+    $_name = "${name}.${certfile_suffix}"
   }
 
 
   if $source {
 
-    validate_re($source, '\.crt$', "[Trusted_ca::Ca::${name}]: source must a PEM encoded file with the crt extension")
+    if inline_template('<% if /\.#{@certfile_suffix}$/.match(@source) then %>yes<% else %>no<% end %>') == 'no' {
+      fail("[Trusted_ca::Ca::${name}]: source must a PEM encoded file with the ${certfile_suffix} extension")
+    }
 
     file { "${install_path}/${_name}":
       ensure => 'file',

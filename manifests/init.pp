@@ -27,6 +27,8 @@ class trusted_ca (
   $path                 = $::trusted_ca::params::path,
   $install_path         = $::trusted_ca::params::install_path,
   $update_command       = $::trusted_ca::params::update_command,
+  $certfile_suffix      = $::trusted_ca::params::certfile_suffix,
+  $certs_package        = $::trusted_ca::params::certs_package,
 ) inherits trusted_ca::params {
 
   if is_array($path) {
@@ -36,7 +38,7 @@ class trusted_ca (
     $_path = $path
   }
 
-  package { 'ca-certificates':
+  package { $certs_package:
     ensure  => $certificates_version,
   }
 
