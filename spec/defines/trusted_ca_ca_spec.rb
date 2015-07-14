@@ -57,4 +57,16 @@ describe 'trusted_ca::ca', :type => :define do
     end
   end
 
+  context 'on Suse' do
+    let(:facts) { { :osfamily => 'Suse', :operatingsystemrelease => '11.3' } }
+    let(:params) { { :source => 'puppet:///data/mycert.pem' } }
+
+    context 'default' do
+      it { should contain_file('/etc/ssl/certs/mycert.pem').with(
+        :source => 'puppet:///data/mycert.pem',
+        :notify => "Exec[validate /etc/ssl/certs/mycert.pem]"
+      ) }
+    end
+  end
+
 end

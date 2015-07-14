@@ -8,6 +8,8 @@ class trusted_ca::params {
       $path = [ '/usr/bin', '/bin']
       $update_command = 'update-ca-trust enable && update-ca-trust'
       $install_path = '/etc/pki/ca-trust/source/anchors'
+      $certfile_suffix = 'crt'
+      $certs_package = 'ca-certificates'
 
       case $::operatingsystemmajrelease {
         '6', '7': {
@@ -21,6 +23,8 @@ class trusted_ca::params {
       $path = ['/bin', '/usr/bin', '/usr/sbin']
       $update_command = 'update-ca-certificates'
       $install_path = '/usr/local/share/ca-certificates'
+      $certfile_suffix = 'crt'
+      $certs_package = 'ca-certificates'
 
       case $::operatingsystemrelease {
         '12.04', '14.04': {
@@ -29,6 +33,13 @@ class trusted_ca::params {
           fail("${::osfamily} ${::operatingsystemrelease} has not been tested with this module.  Please feel free to test and report the results")
         }
       }
+    }
+    'Suse': {
+      $path = ['/usr/bin']
+      $update_command = 'c_rehash'
+      $install_path = '/etc/ssl/certs'
+      $certfile_suffix = 'pem'
+      $certs_package = 'openssl-certs'
     }
     default: {
       fail("${::osfamily}/${::operatingsystem} ${::operatingsystemrelease} not supported")
