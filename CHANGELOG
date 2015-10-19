@@ -1,3 +1,5 @@
+20151019 v1.0.1
+  Fix relationship with jks <adamwenner>
 20150108 v1.0.0
   Rewrote module to use system methods for trusted certificates
   Add separate java define for java keystores
