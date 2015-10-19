@@ -81,7 +81,7 @@ define trusted_ca::java (
     command     => "openssl x509 -in /tmp/${name}-trustedca -noout",
     logoutput   => on_failure,
     path        => $::trusted_ca::path,
-    notify      => Exec["import ${name} to jks ${java_keystore}"],
+    notify      => Exec["import /tmp/${name}-trustedca to jks ${java_keystore}"],
     returns     => 0,
     refreshonly => true,
   }
