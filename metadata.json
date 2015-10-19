@@ -1,6 +1,6 @@
 {
   "name": "evenup-trusted_ca",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "Justin Lambert <jlambert@letsevenup.com>",
   "license": "Apache-2.0",
   "summary": "Manages trusted_ca",
