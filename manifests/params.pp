@@ -27,7 +27,7 @@ class trusted_ca::params {
       $certs_package = 'ca-certificates'
 
       case $::operatingsystemrelease {
-        '12.04', '14.04': {
+        '12.04', '14.04', '8.2': {
         }
         default: {
           fail("${::osfamily} ${::operatingsystemrelease} has not been tested with this module.  Please feel free to test and report the results")
