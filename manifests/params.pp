@@ -10,12 +10,24 @@ class trusted_ca::params {
       $install_path = '/etc/pki/ca-trust/source/anchors'
       $certfile_suffix = 'crt'
       $certs_package = 'ca-certificates'
-
-      case $::operatingsystemmajrelease {
-        '6', '7': {
+      case $::operatingsystem {
+        'Amazon': {
+          case $::operatingsystemmajrelease {
+            '2015': {
+            }
+            default: {
+              fail("${::osfamily} ${::operatingsystem} ${::operatingsystemmajrelease} has not been tested with this module.  Please feel free to test and report the results")
+            }
+          }
         }
         default: {
-          fail("${::osfamily} ${::operatingsystemmajrelease} has not been tested with this module.  Please feel free to test and report the results")
+          case $::operatingsystemmajrelease {
+            '6', '7': {
+            }
+            default: {
+              fail("${::osfamily} ${::operatingsystemmajrelease} has not been tested with this module.  Please feel free to test and report the results")
+            }
+          }
         }
       }
     }
