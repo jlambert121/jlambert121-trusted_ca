@@ -39,7 +39,7 @@ class trusted_ca::params {
       $certs_package = 'ca-certificates'
 
       case $::operatingsystemrelease {
-        '12.04', '14.04', '8.2': {
+        '12.04', '14.04', '8.2', '15.10': {
         }
         default: {
           fail("${::osfamily} ${::operatingsystemrelease} has not been tested with this module.  Please feel free to test and report the results")
@@ -53,7 +53,14 @@ class trusted_ca::params {
           $update_command = 'c_rehash'
           $install_path = '/etc/ssl/certs'
           $certfile_suffix = 'pem'
-          $certs_package = 'openssl-certs'
+          case $::operatingsystemmajrelease {
+            '11': {
+              $certs_package = 'openssl-certs'
+            }
+            default: {
+              $certs_package = 'ca-certificates'
+            }
+          }
         }
         'OpenSuSE': {
           $path = ['/usr/sbin', '/usr/bin']
