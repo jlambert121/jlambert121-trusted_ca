@@ -35,7 +35,7 @@
 #
 # === Authors
 #
-# * Justin Lambert <mailto:jlambert@letsevenup.com>
+# * Justin Lambert <mailto:jlambert@eml.cc>
 #
 define trusted_ca::java (
   $java_keystore,

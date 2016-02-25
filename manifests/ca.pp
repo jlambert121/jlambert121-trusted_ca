@@ -37,7 +37,7 @@
 #
 # === Authors
 #
-# * Justin Lambert <mailto:jlambert@letsevenup.com>
+# * Justin Lambert <mailto:jlambert@eml.cc>
 #
 define trusted_ca::ca (
   $source          = undef,

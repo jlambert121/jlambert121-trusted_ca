@@ -20,7 +20,7 @@
 #
 # === Authors
 #
-# * Justin Lambert <mailto:jlambert@letsevenup.com>
+# * Justin Lambert <mailto:jlambert@eml.cc>
 #
 class trusted_ca (
   $certificates_version = $::trusted_ca::params::certificates_version,

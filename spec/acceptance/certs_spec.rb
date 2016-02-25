@@ -1,9 +1,7 @@
 require 'spec_helper_acceptance'
 
 describe 'trusted_ca' do
-
   context 'failure before cert' do
-
     # Set up site first, verify things don't work
     it 'should set up apache for testing' do
       pp = <<-EOS
@@ -28,11 +26,9 @@ describe 'trusted_ca' do
     describe command("cd /root && /usr/bin/java SSLPoke #{fact('hostname')}.example.com 443") do
       its(:exit_status) { should eq 1 }
     end
-
   end
 
   context 'success after cert' do
-
     it 'should work idempotently with no errors' do
       pp = <<-EOS
       class { 'trusted_ca': }
@@ -55,6 +51,5 @@ describe 'trusted_ca' do
     describe command("cd /root && /usr/bin/java SSLPoke #{fact('hostname')}.example.com 443") do
       its(:exit_status) { should eq 0 }
     end
-
   end
 end

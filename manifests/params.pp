@@ -39,7 +39,7 @@ class trusted_ca::params {
       $certs_package = 'ca-certificates'
 
       case $::operatingsystemrelease {
-        '12.04', '14.04', '8.2', '15.10': {
+        '8.2', '10.04', '12.04', '14.04', '15.10': {
         }
         default: {
           fail("${::osfamily} ${::operatingsystemrelease} has not been tested with this module.  Please feel free to test and report the results")
@@ -47,12 +47,12 @@ class trusted_ca::params {
       }
     }
     'Suse': {
+      $certfile_suffix = 'pem'
       case $::operatingsystem {
         'SLES': {
           $path = ['/usr/bin']
           $update_command = 'c_rehash'
           $install_path = '/etc/ssl/certs'
-          $certfile_suffix = 'pem'
           case $::operatingsystemmajrelease {
             '11': {
               $certs_package = 'openssl-certs'
@@ -66,7 +66,6 @@ class trusted_ca::params {
           $path = ['/usr/sbin', '/usr/bin']
           $update_command = 'update-ca-certificates'
           $install_path = '/etc/pki/trust/anchors'
-          $certfile_suffix = 'pem'
           $certs_package = 'ca-certificates'
         }
         default: {
