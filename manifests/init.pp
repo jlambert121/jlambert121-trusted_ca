@@ -31,20 +31,13 @@ class trusted_ca (
   $certs_package        = $::trusted_ca::params::certs_package,
 ) inherits trusted_ca::params {
 
-  if is_array($path) {
-    $_path = join($path, ':')
-  }
-  else {
-    $_path = $path
-  }
-
   package { $certs_package:
     ensure  => $certificates_version,
   }
 
   exec { 'update_system_certs':
     command     => $update_command,
-    path        => $_path,
+    path        => $path,
     logoutput   => on_failure,
     refreshonly => true,
   }
