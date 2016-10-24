@@ -26,7 +26,7 @@ describe 'trusted_ca' do
         context 'update_system_certs' do
           context 'array path' do
             let(:params) { { :path => ['/bin', '/usr/bin'] } }
-            it { should contain_exec('update_system_certs').with(:refreshonly => true, :path => '/bin:/usr/bin') }
+            it { should contain_exec('update_system_certs').with(:refreshonly => true, :path => ['/bin', '/usr/bin']) }
           end
 
           context 'string path' do

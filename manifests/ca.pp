@@ -63,10 +63,6 @@ define trusted_ca::ca (
 
   if $source {
 
-    if inline_template('<% if /\.#{@certfile_suffix}$/.match(@source) then %>yes<% else %>no<% end %>') == 'no' {
-      fail("[Trusted_ca::Ca::${name}]: source must a PEM encoded file with the ${certfile_suffix} extension")
-    }
-
     file { "${install_path}/${_name}":
       ensure => 'file',
       source => $source,
